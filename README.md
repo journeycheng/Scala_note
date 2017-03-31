@@ -833,3 +833,88 @@ $ scala -classpath . MyCar
 Welcome to my BMW car!
 This is a BMW car. It is on saleWelcome to my BYD car!
 ```
+
+## 九、特质trait
+
+## 十、模式匹配
+
+### 10.1 简单匹配
+
+```scala
+val colorNum = 1
+val colorStr = colorNum match{
+    case 1 => "red"
+    case 2 => "green"
+    case 3 => "yellow"
+    case _ => "Not Allowed"
+}
+
+println(colorStr)
+```
+
+```linux
+$ scala test_5.scala
+red
+```
+
+```scala
+val colorNum = 4
+val colorStr = colorNum match{
+    case 1 => "red"
+    case 2 => "green"
+    case 3 => "yellow"
+    case unexpected => unexpected + " is Not Allowed"
+}
+
+println(colorStr)
+```
+
+```linux
+$ scala test_5.scala
+4 is Not Allowed
+```
+
+### 10.2 类型模式
+- 对表达式的类型进行匹配
+
+```scala
+for (elem <- List(9, 12.3, "Spark", "Hadoop", 'Hello)){
+    val str  = elem match{
+        case i: Int => i + " is an int value."
+        case d: Double => d + " is a double value."
+        case "Spark" => "Spark is found."
+        case s: String => s + " is a string value."
+        case _ => "This is an unexpected value."
+    }
+
+    println(str)
+}
+```
+
+```linux
+$ scala test_5.scala 
+9 is an int value.
+12.3 is a double value.
+Spark is found.
+Hadoop is a string value.
+This is an unexpected value.
+```
+
+### 10.3 守卫（guard）语句
+
+```scala
+for (elem <- List(1,2,3,4)){
+    elem match {
+        case _ if (elem % 2 == 0) => println(elem + " is even.")
+        case _ => println(elem + " is odd.")
+    }
+}
+```
+
+```linux
+$ scala test_5.scala 
+1 is odd.
+2 is even.
+3 is odd.
+4 is even.
+```
