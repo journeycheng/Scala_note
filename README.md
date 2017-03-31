@@ -20,7 +20,7 @@
 ```linux
 $ vi ~/.bash_profile
 
-// 输入以下内容，其中SCALA_HOME是放置Scala的位置
+# 输入以下内容，其中SCALA_HOME是放置Scala的位置
 SCALA_HOME='/Users/journeycheng/software/Scala/scala-2.12.1/'
 export PATH=$PATH:$SCALA_HOME/bin
 ```
@@ -44,7 +44,7 @@ scala> :quit
      }
  }
  ```
-   - 对象的命名Helloworld可以不用和文件名称一致
+  - 对象的命名Helloworld可以不用和文件名称一致
  - scalac编译，scala执行
  ```linux
  $ scalac test.scala
