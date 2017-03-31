@@ -677,4 +677,159 @@ Name: Timer and mode is 2
 Current Value is: 1
 ```
 
+## 七、对象 object
 
+- 采用object关键字
+### 7.1 单例对象
+```scala
+object Person{
+    private var lastId = 0
+    def newPersonId() = {
+        lastId += 1
+        lastId
+    }
+}
+
+printf("The first person id is %d.\n",  Person.newPersonId())
+printf("The second person id is %d.\n", Person.newPersonId())
+printf("The third person id is %d.\n", Person.newPersonId())
+```
+
+```linux
+$ scala test_3.scala 
+The first person id is 1.
+The second person id is 2.
+The third person id is 3.
+```
+
+### 7.2 伴生对象
+
+- 单例对象与某个类具有相同的名称
+- 类和它的伴生对象必须存在于同一个文件中，而且可以相互访问私有成员（字段和方法）
+
+```scala
+class Person{
+    private val id = Person.newPersonId()  # 调用了伴生对象中的方法
+    private var name = ""
+
+    def this(name: String){
+        this()
+        this.name = name
+    }
+    def info() {printf("The id of %s is %d.\n", name, id)}
+}
+
+object Person{
+    private var lastId = 0
+    def newPersonId() = {
+        lastId += 1
+        lastId
+    }
+    
+    def main(args: Array[String]){
+        val person1 = new Person("Jm")
+        val person2 = new Person("Mx")
+        
+        person1.info
+        person2.info
+    }
+}
+```
+
+```linux
+$ scalac test_3.scala
+
+$ scala Person
+The id of Jm is 1.
+The id of Mx is 2.
+```
+object中方法带private和不带private的区别：
+```linux
+$ javap Person
+Compiled from "test_3.scala"
+public class Person {
+  public static void main(java.lang.String[]);
+  public void info();
+  public Person();
+  public Person(java.lang.String);
+}
+
+
+$ javap Person
+Compiled from "test_3.scala"
+public class Person {
+  public static void main(java.lang.String[]);
+  public static int newPersonId();
+  public void info();
+  public Person();
+  public Person(java.lang.String);
+}
+```
+- 经过编译后，伴生类Peroson中成员和伴生对象Person中的成员都被合并到一起，如果不去掉private修饰符，作为伴生对象的私有方法，在javap反编译后，在执行结果中是看不到private修饰的方法的
+
+### 7.3 应用程序对象
+
+- 每个Scala应用程序必须从一个对象的main方法开始
+
+### 7.4 apply方法和update方法
+
+## 8. 继承
+- 重写一个非抽象方法必须使用override修饰符
+- 只有主构造器可以调用超类的主构造器
+- 在子类中重写超类的抽象方法，不需要使用override关键字
+- 可以重写超类中的字段
+
+### 8.1 抽象类
+- 创建一个抽象类，这个类可以被其他类继承
+- 定义一个抽象类，需要使用关键字abstract
+- 定义一个抽象类的抽象方法，不需要关键字abstract，只要把方法体空着，不写方法体就可以
+- 抽象类中定义的字段，只有没有给出初始化值，就表示为一个抽象字段；但是，抽象字段必须要声明类型
+- 抽象类不能直接被实例化
+```scala
+abstract class Car{
+    val carBrand: String # 抽象字段
+    def info() # 抽象方法
+    def greeting() {println("Welcome to my car!")}
+}
+```
+### 8.2 扩展类
+- 定义扩展类，扩展（继承）抽象类
+- 重写超类字段，需要使用override字段
+- 重写超类的抽象方法，不需要使用override关键字，如果加上，编译也不会报错
+- 重写超类的非抽象方法，必须使用override关键字
+```scala
+class BMWCar extends Car{
+    override val carBrand = "BMW"
+    def info() {printf("This is a %s car. It is on sale", carBrand)}
+
+    override def greeting() {println("Welcome to my BMW car!")}
+}
+
+class BYDCar extends Car{
+    override val carBrand = "BYD"
+    def info() {printf("This is a %s car. It is on sale", carBrand)}
+
+    override def greeting() {println("Welcome to my BYD car!")}
+}
+
+object MyCar{
+    def main(args: Array[String]){
+        val myCar1 = new BMWCar()
+        val myCar2 = new BYDCar()
+
+        myCar1.greeting()
+        myCar1.info()
+        myCar2.greeting()
+        myCar2.info()
+    }
+
+}
+```
+
+```linux
+$ scalac test_4.scala
+
+$ scala -classpath . MyCar
+Welcome to my BMW car!
+This is a BMW car. It is on saleWelcome to my BYD car!
+```
