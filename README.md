@@ -51,3 +51,90 @@ scala> :quit
  $ scala -classpth . Helloworld
  Hello, World!
  ```
+
+## 三、基础知识
+
+### 3.1 变量
+
+- val
+ - 不可变，在声明时必须被初始化，初始化以后就不能再被赋值
+- var
+ - 可变，声明的时候需要进行初始化，初始化以后还可以再次对其赋值
+
+- val变量
+```scala
+scala> val myStr = "Hello World"
+myStr: String = Hello World
+
+scala> val num = 1
+num: Int = 1
+
+scala> println(myStr)
+Hello World
+```
+
+scala具有**类型推断能力**，可以自动推断出变量的类型。可以按照上述格式显式声明变量的类型。
+
+- var变量
+```scala
+scala> var myAge: Int= 18
+myAge: Int = 18
+
+scala> myAge = 17
+myAge: Int = 17
+```
+### 3.2 基本数据类型
+
+- **Byte、Char、Short、Int、Long、Float、Double和Boolean**
+- 这些类型都是“类”，并且是包scala的成员，比如Int的全名是scala.Int；对于字符串，Scala用java.lang.String类表示
+- Scala没有提供++和--操作符，需要递增和递减时方法和python一样
+
+### 3.3 Range
+
+```scala
+scala> 1 to 5
+res2: scala.collection.immutable.Range.Inclusive = Range 1 to 5
+
+scala> 1.to(5)
+res3: scala.collection.immutable.Range.Inclusive = Range 1 to 5
+
+scala> 1 until 5
+res4: scala.collection.immutable.Range = Range 1 until 5
+
+scala> 1 to 10 by 2
+res5: scala.collection.immutable.Range = inexact Range 1 to 10 by 2
+```
+
+### 3.4 打印语句
+```scala
+# 单行输出
+scala> print("My name is:"); print("JM")
+My name is:JM
+
+# 换行输出
+scala> println("My name is:"); println("JM")
+My name is:
+JM
+
+# 格式化输出
+scala> val i=5; val j=8
+i: Int = 5
+j: Int = 8
+
+scala> printf("My name is %s. I hava %d apples and %d egg.\n", "JM", i, j)
+My name is JM. I hava 5 apples and 8 egg.
+```
+
+### 3.5 读写文件
+```scala
+scala> import java.io.PrintWriter
+import java.io.PrintWriter
+
+scala> val out = new PrintWriter("output.txt")
+out: java.io.PrintWriter = java.io.PrintWriter@4902c584
+
+scala> for (i <- 1 to 5) out.println(i)
+
+scala> out.close()
+```
+
