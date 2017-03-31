@@ -126,6 +126,8 @@ My name is JM. I hava 5 apples and 8 egg.
 ```
 
 ### 3.5 读写文件
+
+- 使用java.io.PrintWriter实现把数据写入到文本文件
 ```scala
 scala> import java.io.PrintWriter
 import java.io.PrintWriter
@@ -138,3 +140,32 @@ scala> for (i <- 1 to 5) out.println(i)
 scala> out.close()
 ```
 
+在终端上查看:
+
+```linux
+$ cat output.txt 
+1
+2
+3
+4
+5
+```
+
+- 使用Scala.io.Source读取文本文件中的行
+```scala
+scala> import scala.io.Source
+import scala.io.Source
+
+scala> val inputFile = Source.fromFile("output.txt")
+inputFile: scala.io.BufferedSource = non-empty iterator
+
+scala> val lines = inputFile.getLines
+lines: Iterator[String] = non-empty iterator
+
+scala> for (line<- lines) println(line)
+1
+2
+3
+4
+5
+```
