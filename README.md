@@ -105,16 +105,16 @@ res5: scala.collection.immutable.Range = inexact Range 1 to 10 by 2
 
 ### 3.4 打印语句
 ```scala
-# 单行输出
+// 单行输出
 scala> print("My name is:"); print("JM")
 My name is:JM
 
-# 换行输出
+// 换行输出
 scala> println("My name is:"); println("JM")
 My name is:
 JM
 
-# 格式化输出
+// 格式化输出
 scala> val i=5; val j=8
 i: Int = 5
 j: Int = 8
@@ -223,18 +223,18 @@ scala> for(i <- 1 to 5) println(i)
 4
 5
 
-# 改变步长
+// 改变步长
 scala> for(i <- 1 to 5 by 2) println(i)
 1
 3
 5
 
-# 过滤－－守卫表达式
+// 过滤－－守卫表达式
 scala> for(i <- 1 to 5 if i%2==0) println(i)
 2
 4
 
-# 多个生成器，用分号隔开
+// 多个生成器，用分号隔开
 scala> for(i <- 1 to 3; j <- 1 to 3) println(i*j)
 1
 2
@@ -424,17 +424,17 @@ Tsinghua University
 scala> import scala.collection.mutable.Map
 import scala.collection.mutable.Map
 
-# 创建可变映射
+// 创建可变映射
 scala> val university2 = Map("THU"->"Tsinghua University", "PKU"->"Peking University")
 university2: scala.collection.mutable.Map[String,String] = Map(THU -> Tsinghua University, PKU -> Peking University)
 
-# 更新已有元素的值
+// 更新已有元素的值
 scala> university2("PKU") = "Beijing University"
 
-# 添加新元素
+// 添加新元素
 scala> university2("BUPT") = "Posts and Telecom"
 
-# 使用+=操作添加新元素
+// 使用+=操作添加新元素
 scala> university2 += ("FDU" -> "FuDan University")
 res48: university2.type = Map(BUPT -> Posts and Telecom, THU -> Tsinghua University, FDU -> FuDan University, PKU -> Beijing University)
 ```
@@ -495,3 +495,186 @@ Hadoop
 Spark
 Scala
 ```
+
+## 六、类 class
+
+### 6.1 class模版
+
+```scala
+class className{
+    private 字段
+    def 方法
+}
+```
+```scala
+class Counter{
+    private var value = 0
+    def increment(): Unit = {value += 1}
+    def current(): Int = {value}
+}
+
+val myCounter = new Counter
+myCounter.increment()
+println(myCounter.current)
+```
+- 把value字段设置为private，外界无法访问，只有在类内部可以访问该字段；如果字段前面没有修饰符，默认为public，外部也可以访问该字段
+- increment()是方法，没有参数，冒号后面的Unit表示不返回任何值；方法的返回值，不需要return，方法的最后一个值就是方法的返回值
+- 如果方法中只有一行语句，可以直接去掉大括号
+- 如果没有返回值，可以去掉**: Unit = **
+- 调用无参方法时，可以省略方法名后面的圆括号
+
+```linux
+$ scala test.scala
+1
+```
+- 需要将声明都封装在对象中才能被编译（执行scalac）
+```scala
+class Counter{
+    private var value = 0
+    def increment(step: Int): Unit = {value += step}
+    def current(): Int = {value}
+}
+
+object MyCounter{
+    def main(args: Array[String]){
+        val myCounter = new Counter
+        myCounter.increment(5)
+        println(myCounter. current)
+    }
+}
+```
+```linux
+$ scalac test.scala
+$ scala -classpath . MyCounter
+5
+```
+
+### 6.2 getter和setter方法
+ 
+- 给类中的字段设置值以及读取值
+- 读取值：定义一个方法，方法的名称就是我们想要的字段的名称
+- 设置值：定义一个方法
+```scala
+class Counter{
+    private var privateValue = 0
+    def value = privateValue
+    def value_=(newValue: Int){
+        if (newValue > 0) privateValue = newValue
+    }
+    def increment(step: Int): Unit = {value += step}
+    def current(): Int = {value}
+}
+
+object MyCounter{
+    def main(args: Array[String]){
+        val myCounter = new Counter
+        println(myCounter.value)
+        myCounter.value = 3
+        println(myCounter.value)
+        myCounter.increment(1)
+        println(myCounter. current)
+    }
+}
+```
+测试
+```linux
+$ scalac test.scala 
+$ scala -classpath . MyCounter
+0
+3
+4
+```
+
+### 6.3 辅助构造器
+- Scala构造器包含1个主构造器和若干个辅助构造器
+- 辅助构造器的名称为this
+- 每个辅助构造器都必须调用一个此前已经定义的辅助构造器或主构造器
+- 有点函数重构的意思
+
+```scala
+class Counter{
+    private var value = 0
+    private var name = ""
+    private var mode = 1
+    
+    def this(name: String){   # 第一个辅助构造器
+        this()    # 调用主构造器
+        this.name = name
+    }
+
+    def this(name: String, mode: Int){
+        this(name)    # 调用前一个辅助构造器
+        this.mode = mode
+    }
+
+    def increment(step: Int): Unit = {value += step}
+    def current(): Int = {value}
+    def info(): Unit = {printf("Name:%s and mode is %d\n", name, mode)}
+}
+
+object MyCounter{
+    def main(args: Array[String]){
+        val myCounter1 = new Counter
+        val myCounter2 = new Counter("Runner")
+        val myCounter3 = new Counter("Timer",2)
+
+        myCounter1.info()
+        myCounter1.increment(1)
+        printf("Current Value is: %d\n", myCounter1.current)
+
+        myCounter2.info()
+        myCounter2.increment(2)
+        printf("Current Value is: %d\n", myCounter2.current)
+
+        myCounter3.info()
+        myCounter3.increment(3)
+        printf("Current Value is: %d\n", myCounter3.current)
+    }
+}
+
+```
+
+- 编译和运行
+```linux
+$ scalac test.scala
+
+$ scala -classpath . MyCounter
+Name: and mode is 1
+Current Value is: 1
+Name:Runner and mode is 1
+Current Value is: 2
+Name:Timer and mode is 2
+Current Value is: 3
+```
+
+### 6.4 主构造器
+- Scala的每个类都有主构造器
+- Scala的主构造器是整个类体，需要在类名称后面罗列出构造器所需的所有参数，这些参数被编译成字段，字段的值就是创建对象时传入的参数的值
+
+```scala
+class Counter(val name: String, val mode:Int){
+    private var value = 0
+    def increment(step: Int): Unit={value += step}
+    def current(): Int = {value}
+    def info(): Unit={printf("Name: %s and mode is %d\n", name, mode)}
+}
+
+object MyCounter{
+    def main(args: Array[String]){
+        val myCounter = new Counter("Timer", 2)
+        myCounter.info
+        myCounter.increment(1)
+        printf("Current Value is: %d\n", myCounter.current)
+    }
+}
+```
+编译和执行
+```linux
+$ scalac test_2.scala
+
+$ scala -classpath . MyCounter
+Name: Timer and mode is 2
+Current Value is: 1
+```
+
+
