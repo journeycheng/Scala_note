@@ -169,3 +169,100 @@ scala> for (line<- lines) println(line)
 4
 5
 ```
+
+## 四、控制结构
+
+### 4.1 if 条件表达式
+```scala
+val x=6
+if (x>0){
+    println("This is a positive number")
+} else{
+    println("This is not a positive number")
+}
+```
+
+if表达式的值可以赋值给变量
+```scala
+scala> val x = 6
+x: Int = 6
+
+scala> val a = if (x>0) 1  else -1
+a: Int = 1
+```
+
+### 4.2 while循环
+- while(){}
+```scala
+var i = 9
+while (i > 0){
+    i -= 1
+    printf("i is %d\n", i)
+}
+```
+- do{} while()
+```scala
+var i = 0
+do{
+    i += 1
+    println(i)
+}while(i<5)
+```
+
+### 4.3 for循环
+
+- for循环语句格式
+```scala
+for (变量<-表达式) 语句块
+```
+ - 其中“变量<-表达式”被称为生成器
+ 
+```scala
+scala> for(i <- 1 to 5) println(i)
+1
+2
+3
+4
+5
+
+# 改变步长
+scala> for(i <- 1 to 5 by 2) println(i)
+1
+3
+5
+
+# 过滤－－守卫表达式
+scala> for(i <- 1 to 5 if i%2==0) println(i)
+2
+4
+
+# 多个生成器，用分号隔开
+scala> for(i <- 1 to 3; j <- 1 to 3) println(i*j)
+1
+2
+3
+2
+4
+6
+3
+6
+9
+
+scala> for(i<- 1 to 5 if i%2== 0; j <- 1 to 3 if j != i) println(i*j)
+2
+6
+4
+8
+12
+```
+
+- for推导式
+ - 对过滤后的结果进一步处理，采用**yield关键字**，对过滤后的结果构建一个集合
+```scala
+scala> for(i<- 1 to 5 if i%2==0) yield i
+res22: scala.collection.immutable.IndexedSeq[Int] = Vector(2, 4)
+```
+
+## 五、数据结构
+
+ 
