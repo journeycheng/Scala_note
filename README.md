@@ -1,7 +1,5 @@
 # Scala
 
----
-
 ## 一、简介
 
 - 多范式编程语言，继承了面向对象和函数式语言的特性
@@ -14,7 +12,6 @@
   - 兼容Java，运行速度快，且能融合到Hadoop生态圈中
   - 提供了REPL(Read-Eval-Print Loop, 交互式解释器)，类似于Ipython，很大程度上提升开发效率
   
----
 
 ## 二、安装
 
@@ -35,4 +32,22 @@ Welcome to Scala 2.12.1 (Java HotSpot(TM) 64-Bit Server VM, Java 1.8.0_121).
 Type in expressions for evaluation. Or try :help.
 
 scala> 
+scala> 8*2+5
+scala> :quit
 ```
+- Hello World
+ - 新建一个文件test.scala，内容如下：
+ ```scala
+ object Helloworld {
+     def main(args: Array[String]){
+         println("Hello, World!")
+     }
+ }
+ ```
+   - 对象的命名Helloworld可以不用和文件名称一致
+ - scalac编译，scala执行
+ ```linux
+ $ scalac test.scala
+ $ scala -classpth . Helloworld
+ Hello, World!
+ ```
