@@ -463,3 +463,35 @@ scala> for(v <- university.values) println(v)
 Tsinghua University
 Peking University
 ```
+
+### 5.6 迭代器 Iterator
+- 迭代器不是一个集合，但是提供了访问集合的一种方法
+- 当构建一个集合需要很大的开销（比如把一个文件的所有行都写入内存），迭代器就可以发挥很好的作用
+- 两个基本操作:hasNext用于检测迭代器是否还有下一个元素，next或者next()返回下一个元素
+
+```scala
+scala> var iter = Iterator("Hadoop", "Spark", "Scala")
+iter: Iterator[String] = non-empty iterator
+
+scala> while (iter.hasNext){
+     |     println(iter.next)
+     | }
+Hadoop
+Spark
+Scala
+```
+
+上述操作执行结束后，迭代器会移动到末尾，就不能再使用了
+
+- for循环方式
+```scala
+cala> var iter = Iterator("Hadoop", "Spark", "Scala")
+iter: Iterator[String] = non-empty iterator
+
+scala> for (elem <- iter){
+     |     println(elem)
+     | }
+Hadoop
+Spark
+Scala
+```
