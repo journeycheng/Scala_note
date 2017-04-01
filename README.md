@@ -918,3 +918,168 @@ $ scala test_5.scala
 3 is odd.
 4 is even.
 ```
+
+## 十一、函数式编程
+
+- 函数式编程一个重要特性就是值不可变性，这对于编写可扩展的并发程序而言可以带来巨大好处，因为它避免了对公共的可变状态进行同步访问控制的复杂问题
+
+### 11.1 匿名函数
+```scala
+(参数) => 表达式  // 如果参数只有一个，参数的圆括号可以省略
+```
+- 直接把匿名函数存放到变量中
+```scala
+scala> val myNumFunc: Int => Int = (num: Int) => num*2
+myNumFunc: Int => Int = $$Lambda$1043/1689723487@33db72bd
+
+scala> println(myNumFunc(3))
+6
+
+// 类型推断机制，但不能全部省略
+scala> val myNumFunc = (num: Int) => num*2
+myNumFunc: Int => Int = $$Lambda$1057/1069350529@7a1f45ed
+
+scala> println(myNumFunc(3))
+6
+```
+
+### 11.2 闭包
+```scala
+object MyTest{
+    def main(args: Array[String]) : Unit = {
+        def plusStep(step: Int) = (num: Int) => num + step
+        val myFunc = plusStep(3) // 给自由变量step赋值
+        println(myFunc(10))  
+    }
+}
+```
+- plusStep函数
+    - step：自由变量，只有在运行的时候才能确定
+    - num：函数变量，只有在调用的时候才被赋值
+    - 闭包，从开放到封闭的过程
+```linux
+$ scala test_6.scala
+13
+```
+- 再看一个例子
+```
+scala> var more = 1
+more: Int = 1
+
+scala> val addMore = (x: Int) => x + more
+addMore: Int => Int = $$Lambda$1060/361712894@35f639fa
+
+scala> addMore(10)
+res2: Int = 11
+
+scala> more = 9
+more: Int = 9
+
+scala> addMore(10)
+res3: Int = 19
+```
+- 每个闭包都会访问闭包创建时活跃的自由变量more
+
+### 11.3 遍历操作
+- 列表遍历
+```scala
+scala> val list  = List(1,2,3,4)
+scala> for (elem <- list) println(elem)
+1
+2
+3
+4
+
+scala> list.foreach(elem => println(elem))
+1
+2
+3
+4
+```
+- 映射遍历
+```scala
+scala> val university = Map("TUH" -> "Tsinghua University", "PKU" -> "Peking University")
+university: scala.collection.immutable.Map[String,String] = Map(TUH -> Tsinghua University, PKU -> Peking University)
+
+scala> for ((k, v) <- university) printf("Code is: %s and name is: %s\n", k, v)
+Code is: TUH and name is: Tsinghua University
+Code is: PKU and name is: Peking University
+
+scala> for(k <- university.keys) println(k)
+TUH
+PKU
+
+scala> for (v <- university.values) println(v)
+Tsinghua University
+Peking University
+
+scala> university foreach {case(k, v) => println(k +":" + v)}
+TUH:Tsinghua University
+PKU:Peking University
+
+scala> university foreach {kv => println(kv._1 + ":" + kv._2)}
+TUH:Tsinghua University
+PKU:Peking University
+```
+
+### 11.4 map操作
+- map操作是针对集合的典型的变换操作，它将某个函数应用到集合中的每个元素，并产生一个结果集合
+```scala
+scala> val books = List("Hadoop", "Hive", "HDFS")
+books: List[String] = List(Hadoop, Hive, HDFS)
+
+scala> books.map(s => s.toUpperCase)
+res12: List[String] = List(HADOOP, HIVE, HDFS)
+```
+- flatMap是map的一种扩展，函数对每个输入返回一个集合，flapMap把生成的多个集合合并为一个集合
+```scala
+scala> books flatMap (s => s.toList)
+res13: List[Char] = List(H, a, d, o, o, p, H, i, v, e, H, D, F, S)
+
+scala> books.flatMap(s => s.toList)
+res14: List[Char] = List(H, a, d, o, o, p, H, i, v, e, H, D, F, S)
+```
+```scala
+a 方法 b
+a.方法(b)
+```
+
+### 11.5 filter操作
+- 遍历一个集合从中获取满足制定条件的元素组成的一个集合
+
+```scala
+scala> val universityOfTsu = university filter {kv => kv._2 contains "Tsinghua"} 
+universityOfTsu: scala.collection.immutable.Map[String,String] = Map(TUH -> Tsinghua University)
+
+scala> println(universityOfTsu)
+Map(TUH -> Tsinghua University)
+
+scala> val universityOfP = university filter {kv => kv._2 startsWith "P"}
+universityOfP: scala.collection.immutable.Map[String,String] = Map(PKU -> Peking University)
+
+scala> println(universityOfP)
+Map(PKU -> Peking University)
+```
+
+### 12.6 reduce操作
+- reduce二元操作对集合中的元素进行归约
+```scala
+scala> val list = List(1, 2, 3, 4)
+list: List[Int] = List(1, 2, 3, 4)
+
+scala> list.reduceLeft(_ + _)
+res17: Int = 10
+
+scala> list.reduceRight(_ + _)
+res18: Int = 10
+
+scala> list.reduce(_ + _)  // 默认left
+res19: Int = 10
+```
+
+### 12.7 fold操作
+- 类似于reduce。fold操作需要从一个初始的“种子”值开始，并以该值作为上下文，处理集合中的每个元素
+```scala
+scala> list.fold(10)(_*_)
+res21: Int = 240
+```
