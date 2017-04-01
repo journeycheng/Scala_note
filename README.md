@@ -1083,3 +1083,33 @@ res19: Int = 10
 scala> list.fold(10)(_*_)
 res21: Int = 240
 ```
+### 12.7 函数式编程实例 WordCount
+
+```scala
+import java.io.File
+import scala.io.Source
+
+object WordCount{
+    def main(args: Array[String]){
+        val dirfile = new File("wordcount")
+        val files  = dirfile.listFiles  // 文件数组
+        for (file <- files) println(file)
+        val listFiles = files.toList //将连续存放的数组转换为递归存放的列表
+        val wordsMap = scala.collection.mutable.Map[String, Int]()
+        listFiles.foreach( file => Source.fromFile(file).getLines().foreach(line => line.split(" ").
+            foreach(
+                word => {
+                    if (wordsMap.contains(word)){
+                        wordsMap(word) += 1
+                    } else{
+                        wordsMap += (word -> 1)
+                    }
+                }
+            )
+         ))
+        println(wordsMap)
+        for ((key, value) <- wordsMap) println(key + ": " + value)
+ 
+    }
+}
+```
